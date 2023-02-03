@@ -23,6 +23,8 @@ namespace MarsRover.Models
         public int row { get; set; }
         public int column { get; set; }
         public int difficulty { get; set; }
+        public string location => $"({row}, {column})";
+
     }
 
     public class Lowresolutionmap

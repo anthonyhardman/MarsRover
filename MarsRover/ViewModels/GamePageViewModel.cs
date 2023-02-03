@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MarsRover.Models;
 using MarsRover.Services;
+using System.Collections.ObjectModel;
 
 namespace MarsRover.ViewModels;
 
@@ -25,6 +27,8 @@ public partial class GamePageViewModel : ObservableObject
 
     [ObservableProperty, NotifyPropertyChangedFor(nameof(PositionAndTarget))]
     private string position;
+
+    public ObservableCollection<Neighbor> HudCells { get; set; }
 
     public float BatteryLevel => battery / 100.0f;
 
@@ -53,6 +57,7 @@ public partial class GamePageViewModel : ObservableObject
     public GamePageViewModel(MarsRoverService service)
     {
         this.service = service;
+        HudCells = new();
     }
 
     [RelayCommand]
@@ -82,6 +87,13 @@ public partial class GamePageViewModel : ObservableObject
 
             Position = $"{col}, {row}";
             await SecureStorage.SetAsync("position", Position);
+
+            HudCells.Clear();
+
+            foreach (var cell in movement.neighbors.Take(10))
+            {
+                HudCells.Add(cell);
+            }
         }
     }
 
