@@ -22,5 +22,36 @@ namespace MarsRover.Services
             var response = await http.GetFromJsonAsync<JoinGameResponse>($"game/join?gameId={gameId}&name={name}");
             return response;
         }
+
+        public async Task<MoveResponse> Move(string token, string direction)
+        {
+            try
+            {
+                return await http.GetFromJsonAsync<MoveResponse>($"game/moveperseverance?token={token}&direction={direction}");
+            }
+            catch 
+            {
+                return new MoveResponse
+                {
+                    orientation = direction,
+                    message = "Too Many Requests"
+                };
+            }
+        }
+
+        public async Task<String> GameStatus(string token)
+        {
+            try
+            {
+                var response = await http.GetFromJsonAsync<GameStatusResponse>($"game/status?token={token}");
+                return response.status;
+            }
+            catch
+            {
+                return "Invalid";
+            }
+        }
     }
+
+
 }

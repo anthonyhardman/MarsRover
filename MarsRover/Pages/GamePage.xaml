@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="MarsRover.Pages.GamePage"
+             Title="GamePage">
+    
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="NavigatedTo"
+            Command="{Binding LoadedCommand}" />
+    </ContentPage.Behaviors>
+    
+    <Grid
+            RowDefinitions="Auto,Auto,Auto,*,Auto">
+        <Label Text="{Binding Name}"
+               FontSize="Title"
+               Grid.Row="0"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"/>
+        <Label
+            Text="{Binding PositionAndTarget}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Grid.Row="1"/>
+        <ProgressBar
+            Progress="{Binding BatteryLevel}"
+            Margin="25"
+            ProgressColor="LimeGreen"
+            VerticalOptions="Start"
+            Grid.Row="2"/>
+        <Grid
+                Grid.Column="0"
+                Grid.Row="3"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                RowDefinitions="100, 100, 100"
+                ColumnDefinitions="100, 100, 100">
+            <Button Text="⇮"
+                    FontSize="Large"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Command="{Binding MoveDirectionCommand}"
+                    CommandParameter="Forward"/>
+            <Button Text="⇩"
+                    FontSize="Large"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Command="{Binding MoveDirectionCommand}"
+                    CommandParameter="Reverse"/>
+            <Button Text="↺"
+                    FontSize="Large"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Command="{Binding MoveDirectionCommand}"
+                    CommandParameter="Left"/>
+            <Button Text="↻"
+                    FontSize="Large"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Command="{Binding MoveDirectionCommand}"
+                    CommandParameter="Right"/>
+            <Label  Text="{Binding OrientationSymbol}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontSize="Large"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    TextColor="White"/>
+        </Grid>
+        <Button
+            Text="Leave Game"
+            Margin="25"
+            BackgroundColor="Red"
+            VerticalOptions="Center"
+            Grid.Row="4"
+            Command="{Binding LeaveGameCommand}"/>
+    </Grid>
+</ContentPage>

@@ -33,5 +33,4 @@ namespace MarsRover.Models
         public int upperRightColumn { get; set; }
         public int averageDifficulty { get; set; }
     }
-
 }
