@@ -63,6 +63,7 @@ public partial class GamePageViewModel : ObservableObject
         Name= await SecureStorage.GetAsync("name");
         Target = await SecureStorage.GetAsync("target");
         Position = await SecureStorage.GetAsync("position");
+        Battery = 0;
     }
 
     [RelayCommand]
@@ -80,6 +81,7 @@ public partial class GamePageViewModel : ObservableObject
             var row = movement.row;
 
             Position = $"{col}, {row}";
+            await SecureStorage.SetAsync("position", Position);
         }
     }
 
