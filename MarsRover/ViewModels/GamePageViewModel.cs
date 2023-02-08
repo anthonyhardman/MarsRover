@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using MarsRover.Pages;
 using MarsRover.Services;
+using System.Collections.ObjectModel;
 
 namespace MarsRover.ViewModels;
 
@@ -51,6 +52,7 @@ public partial class GamePageViewModel : ObservableObject
     public GamePageViewModel(MarsRoverService service)
     {
         this.service = service;
+        HudCells = new();
     }
 
     [RelayCommand]
