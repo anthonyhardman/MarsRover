@@ -30,13 +30,15 @@ public static class MauiProgram
 		builder.Services.AddSingleton<GamePage>();
 		builder.Services.AddSingleton<GamePageViewModel>();
 
+		builder.Services.AddSingleton<MapPage>();
+		builder.Services.AddSingleton<MapPageViewModel>();	
+
 		builder.Services.AddSingleton<MarsRoverService>();
 
 		builder.Services.AddSingleton(sp => new HttpClient
 		{
 			BaseAddress = new Uri("https://snow-rover.azurewebsites.net/")
         });
-
 
 		return builder.Build();
 	}

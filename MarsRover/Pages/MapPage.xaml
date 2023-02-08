@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:MarsRover.Components"
+             x:Class="MarsRover.Pages.MapPage"
+             Title="MapPage">
+    <VerticalStackLayout
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        BackgroundColor="White">
+        <Border Stroke="black"
+                StrokeThickness="5"
+                Margin="25">
+            <GraphicsView x:Name="GraphicsView"
+                          HeightRequest="500"
+                          WidthRequest="500"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center">
+                
+                <GraphicsView.GestureRecognizers>
+                    <PanGestureRecognizer x:Name="PanGestureRecognizer"/>
+                </GraphicsView.GestureRecognizers>
+                <GraphicsView.Drawable>
+                    <components:MapView x:Name="MapView" 
+                                        HighResolutionMap="{Binding HighResolutionMap}"
+                                        LowResolutionMap="{Binding LowResolutionMap}"
+                                        Zoom="{Binding Zoom}"
+                                        PositionOffset="{Binding PositionOffset}"
+                                        PerseverancePosition="{Binding PerseverancePosition}"/>
+                </GraphicsView.Drawable>
+            </GraphicsView>
+        </Border>
+        <Slider Value="{Binding Zoom}"
+                Maximum="100"
+                Minimum="0.1"
+                Margin="25, 0"
+                ThumbColor="Blue"/>
+    </VerticalStackLayout>
+</ContentPage>

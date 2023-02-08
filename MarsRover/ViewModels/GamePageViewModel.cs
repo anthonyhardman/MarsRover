@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MarsRover.Pages;
 using MarsRover.Services;
 
 namespace MarsRover.ViewModels;
@@ -7,9 +8,6 @@ namespace MarsRover.ViewModels;
 public partial class GamePageViewModel : ObservableObject
 {
     private readonly MarsRoverService service;
-    
-    [ObservableProperty]
-    private string token;
 
     [ObservableProperty, NotifyPropertyChangedFor(nameof(OrientationSymbol))]
     private string orientation;
@@ -26,7 +24,7 @@ public partial class GamePageViewModel : ObservableObject
     [ObservableProperty, NotifyPropertyChangedFor(nameof(PositionAndTarget))]
     private string position;
 
-    public float BatteryLevel => battery / 100.0f;
+    public float BatteryLevel => Battery / 18000.0f;
 
     public string PositionAndTarget => $"⌖{Position}    ⚑{Target}";
 
@@ -58,38 +56,37 @@ public partial class GamePageViewModel : ObservableObject
     [RelayCommand]
     public async Task Loaded()
     {
-        Token = await SecureStorage.GetAsync("token");
-        Orientation = await SecureStorage.GetAsync("orientation");
-        Name= await SecureStorage.GetAsync("name");
-        Target = await SecureStorage.GetAsync("target");
-        Position = await SecureStorage.GetAsync("position");
+        Orientation = service.GameData.Orientation;
+        Name = service.GameData.Name;
+        Target = service.GameData.Target.ToString();
+        Position = service.GameData.Position.ToString();    
         Battery = 0;
     }
 
     [RelayCommand]
     public async Task MoveDirection(string direction)
     {
-        var movement = await service.Move(token, direction);
+        var message = await service.MovePerseveranceAsync(direction);
 
-        if (movement.message != "Too Many Requests")
+        if (message != "Too Many Requests")
         {
-            Orientation = movement.orientation;
-            await SecureStorage.SetAsync("orientation", Orientation);
-            Battery = movement.batteryLevel;
-
-            var col = movement.column;
-            var row = movement.row;
-
-            Position = $"{col}, {row}";
-            await SecureStorage.SetAsync("position", Position);
+            Orientation = service.GameData.Orientation;
+            Battery = service.GameData.Battery;
+            Position = service.GameData.Position.ToString();
         }
     }
 
     [RelayCommand]
     public async Task LeaveGame()
     {
-        SecureStorage.RemoveAll();
+        await service.LeaveGameAsync();
         await Shell.Current.GoToAsync($"..");
+    }
+
+    [RelayCommand]
+    public async Task NaviateToMapPage()
+    {
+        await Shell.Current.GoToAsync($"{nameof(MapPage)}");
     }
 }
  

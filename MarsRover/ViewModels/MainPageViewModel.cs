@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MarsRover.Models;
 using MarsRover.Pages;
 using MarsRover.Services;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MarsRover.ViewModels;
 
@@ -20,16 +23,13 @@ public partial class MainPageViewModel : ObservableObject
         this.service = service;
     }
 
-    private bool canJoinGame => gameId != null && name != null;
-
+    private bool canJoinGame => GameId != null && Name != null;
 
     [RelayCommand]
     public async Task Loaded()
     {
-        GameId = null;
-        var token = await SecureStorage.GetAsync("token");
-        var gameStatus = await service.GameStatus(token);
-        if (token != null && gameStatus != "Invalid")
+        var gameStatus = await service.GameStatusAsync();
+        if (gameStatus != "Invalid")
         {
             await Shell.Current.GoToAsync($"{nameof(GamePage)}");
         }
@@ -38,20 +38,11 @@ public partial class MainPageViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(canJoinGame))]
     public async Task JoinGame()
     {
-        var response = await service.JoinGame(GameId, Name);
-        var token = response.token;
-        var orientation = response.orientation;
-        var targetColumn = response.targetColumn.ToString();
-        var targetRow = response.targetRow.ToString();
-        var startingColumn = response.startingColumn.ToString();
-        var startingRow = response.startingRow.ToString();
+        var joined = await service.JoinGameAsync(GameId, Name);
 
-        await SecureStorage.SetAsync("token", token);
-        await SecureStorage.SetAsync("orientation", orientation);
-        await SecureStorage.SetAsync("name", Name);
-        await SecureStorage.SetAsync("target", $"{targetColumn}, {targetRow}");
-        await SecureStorage.SetAsync("position", $"{startingColumn}, {startingRow}");
-
-        await Shell.Current.GoToAsync($"{nameof(GamePage)}");
+        if (joined)
+        {
+            await Shell.Current.GoToAsync($"{nameof(GamePage)}");
+        }
     }
 }
