@@ -52,7 +52,6 @@ public partial class GamePageViewModel : ObservableObject
     public GamePageViewModel(MarsRoverService service)
     {
         this.service = service;
-        HudCells = new();
     }
 
     [RelayCommand]

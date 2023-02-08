@@ -12,26 +12,11 @@
     </ContentPage.Behaviors>
 
     <Grid
-            RowDefinitions="*,Auto,Auto,Auto,*,Auto"
+            RowDefinitions="Auto,Auto,Auto,*,Auto,Auto"
             ColumnDefinitions="*,Auto,*">
-        <CollectionView Grid.Row="0"
-                    Grid.ColumnSpan="3"
-                    ItemsSource="{Binding HudCells}"
-                    HorizontalOptions="Center"
-                    ItemsLayout="VerticalGrid, 5">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <VerticalStackLayout
-                        HorizontalOptions="Center">
-                        <Label Text="{Binding location}"/> 
-                        <Label Text="{Binding difficulty}"/>
-                    </VerticalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
         <Label Text="{Binding Name}"
                FontSize="Title"
-               Grid.Row="1"
+               Grid.Row="0"
                Grid.Column="1"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
@@ -39,18 +24,18 @@
             Text="{Binding PositionAndTarget}"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            Grid.Row="2"
+            Grid.Row="1"
             Grid.Column="1"/>
         <ProgressBar
             Progress="{Binding BatteryLevel}"
             Margin="25"
             ProgressColor="LimeGreen"
             VerticalOptions="Start"
-            Grid.Row="3"
+            Grid.Row="2"
             Grid.Column="1"/>
         <Grid
                 Grid.Column="1"
-                Grid.Row="4"
+                Grid.Row="3"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 RowDefinitions="100, 100, 100"
@@ -85,21 +70,22 @@
                     FontSize="Large"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    TextColor="Black"/>
+                    TextColor="Blue"/>
         </Grid>
         <Button
             Text="Leave Game"
-            Margin="25"
+            Margin="2"
             BackgroundColor="Red"
-            VerticalOptions="Center"
-            Grid.Row="5"
+            VerticalOptions="End"
+            Grid.Row="4"
             Grid.Column="1"
             Command="{Binding LeaveGameCommand}"/>
         <Button
             Text="Go To Map"
-            Grid.Row="4"
+            Grid.Row="5"
             Grid.Column="1"
-            Margin="25"
+            VerticalOptions="Center"
+            Margin="2"
             Command="{Binding NaviateToMapPageCommand}"/>
     </Grid>
 </ContentPage>
