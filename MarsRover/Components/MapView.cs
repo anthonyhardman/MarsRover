@@ -38,6 +38,12 @@ namespace MarsRover.Components
             set => SetValue(PerseverancePositionProperty, value);   
         }
 
+        public string PerseveranceOrientation
+        {
+            get => (string)GetValue(PerseveranceOrientationProperty);
+            set => SetValue(PerseveranceOrientationProperty, value);
+        }
+
         private Color hot = Color.FromRgb(255, 0, 0);
         private Color cold = Color.FromRgb(0, 0, 255);
 
@@ -56,14 +62,19 @@ namespace MarsRover.Components
         public static readonly BindableProperty PerseverancePositionProperty =
             BindableProperty.Create(nameof(PerseverancePosition), typeof(Coordinate), typeof(MapView));
 
+        public static readonly BindableProperty PerseveranceOrientationProperty =
+            BindableProperty.Create(nameof(PerseveranceOrientation), typeof(string), typeof(MapView));
+
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             var origin = (dirtyRect.Width / 2, dirtyRect.Height / 2);
+            var zoomOffset = Zoom / 2;
+            var cursorScale = 1.0f;
 
             foreach (var cell in LowResolutionMap)
             {
-                var col = origin.Item2 + (cell.LowerLeftRow - PositionOffset.Y) * Zoom - (Zoom / 2);
-                var row = origin.Item1 - (cell.LowerLeftColumn - PositionOffset.X) * Zoom - (Zoom * 10 - Zoom / 2);
+                var col = origin.Item2 + (cell.LowerLeftRow - PositionOffset.Y) * Zoom - zoomOffset;
+                var row = origin.Item1 - (cell.LowerLeftColumn - PositionOffset.X) * Zoom - (Zoom * 10 - zoomOffset);
                 canvas.FillColor = cold.Lerp(hot, cell.ColorTemp);
                 canvas.FillRectangle((float)col, (float)row, Zoom * 10, Zoom * 10);
             }
@@ -72,15 +83,29 @@ namespace MarsRover.Components
             {
                 var c = cell.Value;
                 canvas.FillColor = cold.Lerp(hot, c.ColorTemp);
-                var col = origin.Item1 - (c.Column - PositionOffset.X) * Zoom - (Zoom / 2);
-                var row = origin.Item2 + (c.Row - PositionOffset.Y) * Zoom - (Zoom / 2);
-                canvas.FillRectangle((float)row, (float)col, Zoom, Zoom);
+                var row = origin.Item1 - (c.Column - PositionOffset.X) * Zoom - zoomOffset;
+                var col = origin.Item2 + (c.Row - PositionOffset.Y) * Zoom - zoomOffset;
+                canvas.FillRectangle((float)col, (float)row, Zoom, Zoom);
             }
-            
-            canvas.FillColor = Colors.Black;
-            var col1 = origin.Item1 - (PerseverancePosition.X - PositionOffset.X) * Zoom;
-            var row1 = origin.Item2 + (PerseverancePosition.Y - PositionOffset.Y) * Zoom;
-            canvas.FillCircle((float)row1, (float)col1, Zoom / 2);
+
+            var pRow = origin.Item1 - (PerseverancePosition.X - PositionOffset.X) * Zoom;
+            var pCol = origin.Item2 + (PerseverancePosition.Y - PositionOffset.Y) * Zoom;
+            DrawPerseverance(canvas, cursorScale, pRow, pCol);
+        }
+
+        private void DrawPerseverance(ICanvas canvas, float cursorScale, double pRow, double pCol)
+        {
+            PathF path = new PathF();
+
+            if (PerseveranceOrientation == "North")
+            {
+                path.MoveTo((float)pCol - (Zoom * cursorScale) / 2, (float)pRow + (Zoom * cursorScale) / 2);
+                path.LineTo((float)pCol + (Zoom * cursorScale) / 2, (float)pRow + (Zoom * cursorScale) / 2);
+                path.LineTo((float)pCol, (float)pRow - (Zoom * cursorScale) / 2);
+                canvas.FillColor = Colors.Green;
+                canvas.FillPath(path);
+            }
         }
     }
+
 }

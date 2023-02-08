@@ -23,6 +23,9 @@ public partial class MapPageViewModel : ObservableObject
     [ObservableProperty]
     private Coordinate perseverancePosition;
 
+    [ObservableProperty]
+    private string perseveranceOrientation;
+
     public delegate void InvalidateMapDelegate();
 
     public InvalidateMapDelegate InvalidateMap { get; set; }
@@ -35,7 +38,8 @@ public partial class MapPageViewModel : ObservableObject
         HighResolutionMap = service.GameData.HighResolutionMap;
         lowResolutionMap = service.GameData.LowResolutionMap;
         Zoom = 25;
-        perseverancePosition = service.GameData.Position;
+        PerseverancePosition = service.GameData.Position;
+        PerseveranceOrientation = service.GameData.Orientation;
         originalOffset = new Coordinate(perseverancePosition.X, perseverancePosition.Y);
         PositionOffset = new Coordinate(perseverancePosition.X, perseverancePosition.Y);
         this.PropertyChanged += MapPageViewModel_PropertyChanged; 
@@ -43,10 +47,7 @@ public partial class MapPageViewModel : ObservableObject
 
     private void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(Zoom))
-        {
-            InvalidateMap();
-        }
+        InvalidateMap();
     }
 
     public void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)

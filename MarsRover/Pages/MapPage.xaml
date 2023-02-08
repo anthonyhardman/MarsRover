@@ -12,8 +12,8 @@
                 StrokeThickness="5"
                 Margin="5">
             <GraphicsView x:Name="GraphicsView"
-                          HeightRequest="500"
-                          WidthRequest="500"
+                          HeightRequest="1000"
+                          WidthRequest="1000"
                           HorizontalOptions="Center"
                           VerticalOptions="Center">
                 
@@ -26,7 +26,8 @@
                                         LowResolutionMap="{Binding LowResolutionMap}"
                                         Zoom="{Binding Zoom}"
                                         PositionOffset="{Binding PositionOffset}"
-                                        PerseverancePosition="{Binding PerseverancePosition}"/>
+                                        PerseverancePosition="{Binding PerseverancePosition}"
+                                        PerseveranceOrientation="{Binding PerseveranceOrientation}"/>
                 </GraphicsView.Drawable>
             </GraphicsView>
         </Border>
