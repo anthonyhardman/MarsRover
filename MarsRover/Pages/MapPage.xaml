@@ -10,7 +10,7 @@
         BackgroundColor="White">
         <Border Stroke="black"
                 StrokeThickness="5"
-                Margin="25">
+                Margin="5">
             <GraphicsView x:Name="GraphicsView"
                           HeightRequest="500"
                           WidthRequest="500"
