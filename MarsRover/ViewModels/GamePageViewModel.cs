@@ -28,7 +28,6 @@ public partial class GamePageViewModel : ObservableObject
 
     public InvalidateMapDelegate InvalidateMap { get; set; }
 
-
     public float PerseveranceBatteryGuage => GameData.PerseveranceBattery / 18000.0f * 100.0f;
     public float IngenuityeBatteryGuage => GameData.IngenuityBattery / 18000.0f * 100.0f;
     public string PerseverancePositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.PerseverancePosition.Y}, {GameData.PerseverancePosition.X}";
