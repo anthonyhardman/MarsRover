@@ -13,22 +13,19 @@
                 Margin="5">
             <GraphicsView x:Name="GraphicsView"
                           HeightRequest="500"
-                          WidthRequest="500"
+                          WidthRequest="1000"
                           HorizontalOptions="Center"
                           VerticalOptions="Center">
                 
                 <GraphicsView.GestureRecognizers>
                     <PanGestureRecognizer x:Name="PanGestureRecognizer"/>
+                    <TapGestureRecognizer x:Name="TapGestureRecognizer"/>
                 </GraphicsView.GestureRecognizers>
                 <GraphicsView.Drawable>
                     <components:MapView x:Name="MapView" 
-                                        HighResolutionMap="{Binding HighResolutionMap}"
-                                        LowResolutionMap="{Binding LowResolutionMap}"
+                                        GameData="{Binding GameData}"
                                         Zoom="{Binding Zoom}"
                                         PositionOffset="{Binding PositionOffset}"
-                                        PerseverancePosition="{Binding PerseverancePosition}"
-                                        IngenuityPosition="{Binding IngenuityPosition}"
-                                        PerseveranceOrientation="{Binding PerseveranceOrientation}"
                                         LockCursorSize="True"/>
                 </GraphicsView.Drawable>
             </GraphicsView>

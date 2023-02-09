@@ -8,5 +8,7 @@ public partial class GamePage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = vm;
-	}
+		vm.InvalidateMap = GraphicsView.Invalidate;
+        MapView.BindingContext = vm;
+    }
 }

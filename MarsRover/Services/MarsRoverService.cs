@@ -1,12 +1,7 @@
 ﻿using MarsRover.Models;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MarsRover.Services;
 
@@ -18,14 +13,14 @@ public class MarsRoverService : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public GameData GameData 
-    { 
+    public GameData GameData
+    {
         get => gameData;
-        set 
+        set
         {
             gameData = value;
             OnPropertyChanged(nameof(GameData));
-        } 
+        }
     }
 
     public MarsRoverService(HttpClient http)
@@ -34,7 +29,6 @@ public class MarsRoverService : INotifyPropertyChanged
         var cacheDir = FileSystem.Current.CacheDirectory;
         gameDataPath = Path.Combine(cacheDir, "GameData.json");
         LoadGameData();
-        GameData.PropertyChanged += GameData_PropertyChanged;
     }
 
     private void GameData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -88,6 +82,7 @@ public class MarsRoverService : INotifyPropertyChanged
             GameData.IngenuityPosition = new Coordinate(response.StartingColumn, response.StartingRow);
             GameData.HighResolutionMap = new();
             GameData.LowResolutionMap = response.LowResolutionMap;
+            OnPropertyChanged(nameof(GameData));
 
             foreach (var cell in response.Neighbors)
             {
@@ -117,6 +112,7 @@ public class MarsRoverService : INotifyPropertyChanged
             {
                 GameData.HighResolutionMap[cell.Hash] = cell;
             }
+            OnPropertyChanged(nameof(GameData));
 
             await SaveGameDataAsync();
             return response.message;
@@ -139,6 +135,7 @@ public class MarsRoverService : INotifyPropertyChanged
             {
                 GameData.HighResolutionMap[cell.Hash] = cell;
             }
+            OnPropertyChanged(nameof(GameData));
 
             await SaveGameDataAsync();
             return response.message;
@@ -164,8 +161,7 @@ public class MarsRoverService : INotifyPropertyChanged
 
     public async Task LeaveGameAsync()
     {
-        GameData = new();
-        GameData.PropertyChanged+= GameData_PropertyChanged;
+        GameData.Token = null;
         File.Delete(gameDataPath);
     }
 

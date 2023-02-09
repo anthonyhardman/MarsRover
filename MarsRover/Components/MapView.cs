@@ -1,23 +1,14 @@
 ﻿using MarsRover.Models;
 using Microsoft.Maui.Animations;
-using Microsoft.Maui.Graphics;
-using System.Reflection;
-using System.Resources;
 
 namespace MarsRover.Components
 {
     public class MapView : BindableObject, IDrawable
     {
-        public Dictionary<long, Models.Cell> HighResolutionMap
+        public GameData GameData
         {
-            get => (Dictionary<long, Models.Cell>)GetValue(HighResolutionMapProperty);
-            set => SetValue(HighResolutionMapProperty, value);
-        }
-
-        public IEnumerable<LowResolutionMap> LowResolutionMap
-        {
-            get => (IEnumerable<LowResolutionMap>)GetValue(LowResolutionMapProperty);
-            set => SetValue(LowResolutionMapProperty, value);
+            get => (GameData)GetValue(GameDataProperty);
+            set => SetValue(GameDataProperty, value);
         }
 
         public float Zoom
@@ -32,23 +23,6 @@ namespace MarsRover.Components
             set => SetValue(PositionOffsetProperty, value);
         }
 
-        public Coordinate PerseverancePosition
-        {
-            get => (Coordinate)GetValue(PerseverancePositionProperty);
-            set => SetValue(PerseverancePositionProperty, value);   
-        }
-
-        public string PerseveranceOrientation
-        {
-            get => (string)GetValue(PerseveranceOrientationProperty);
-            set => SetValue(PerseveranceOrientationProperty, value);
-        }
-
-        public Coordinate IngenuityPosition
-        {
-            get => (Coordinate)GetValue(IngenuityPositionProperty);
-            set => SetValue(IngenuityPositionProperty, value);
-        }
 
         public bool LockCursorSize
         {
@@ -62,26 +36,16 @@ namespace MarsRover.Components
             set => SetValue(CursorSizeProperty, value);
         }
 
-        private Color hot = Color.FromRgb(255, 0, 0);
-        private Color cold = Color.FromRgb(0, 0, 255);
+        private float ZoomOffset => Zoom / 2;
 
-        public static readonly BindableProperty HighResolutionMapProperty =
-            BindableProperty.Create(nameof(HighResolutionMap), typeof(Dictionary<long, Models.Cell>), typeof(MapView));
-
-        public static readonly BindableProperty LowResolutionMapProperty =
-            BindableProperty.Create(nameof(LowResolutionMap), typeof(IEnumerable<LowResolutionMap>), typeof(MapView));
+        public static readonly BindableProperty GameDataProperty =
+            BindableProperty.Create(nameof(GameData), typeof(GameData), typeof(MapView));
 
         public static readonly BindableProperty ZoomProperty =
             BindableProperty.Create(nameof(Zoom), typeof(float), typeof(MapView));
 
-        public static readonly BindableProperty PositionOffsetProperty = 
+        public static readonly BindableProperty PositionOffsetProperty =
             BindableProperty.Create(nameof(PositionOffset), typeof(Coordinate), typeof(MapView));
-
-        public static readonly BindableProperty PerseverancePositionProperty =
-            BindableProperty.Create(nameof(PerseverancePosition), typeof(Coordinate), typeof(MapView));
-
-        public static readonly BindableProperty PerseveranceOrientationProperty =
-            BindableProperty.Create(nameof(PerseveranceOrientation), typeof(string), typeof(MapView));
 
         public static readonly BindableProperty LockSizeProperty =
             BindableProperty.Create(nameof(LockCursorSize), typeof(bool), typeof(MapView));
@@ -89,8 +53,9 @@ namespace MarsRover.Components
         public static readonly BindableProperty CursorSizeProperty =
             BindableProperty.Create(nameof(CursorSize), typeof(float), typeof(MapView));
 
-        public static readonly BindableProperty IngenuityPositionProperty =
-            BindableProperty.Create(nameof(IngenuityPosition), typeof(Coordinate), typeof(MapView));
+        private Color hot = Color.FromRgb(255, 0, 0);
+        private Color cold = Color.FromRgb(0, 0, 255);
+
 
         public MapView()
         {
@@ -99,75 +64,102 @@ namespace MarsRover.Components
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            var origin = (dirtyRect.Width / 2, dirtyRect.Height / 2);
-            var zoomOffset = Zoom / 2;
+            var origin = new Coordinate(dirtyRect.Height / 2, dirtyRect.Width / 2);
 
-            foreach (var cell in LowResolutionMap)
+            DrawLowResolutionMap(canvas, GameData.LowResolutionMap, origin);
+            DrawHighResolutionMap(canvas, GameData.HighResolutionMap, origin);
+            DrawTarget(canvas, GameData.Target, origin);
+            DrawIngenuity(canvas, GameData.IngenuityPosition, origin, LockCursorSize ? (CursorSize / 2) : ZoomOffset);
+            DrawPerseverance(canvas, GameData.PerseverancePosition, origin, GameData.Orientation, LockCursorSize ? CursorSize : Zoom);
+        }
+
+        private void DrawLowResolutionMap(ICanvas canvas, IEnumerable<LowResolutionMap> map, Coordinate origin)
+        {
+            foreach (var cell in map)
             {
-                var col = origin.Item2 + (cell.LowerLeftRow - PositionOffset.Y) * Zoom - zoomOffset;
-                var row = origin.Item1 - (cell.LowerLeftColumn - PositionOffset.X) * Zoom - (Zoom * 10 - zoomOffset);
+                var col = origin.Y + (cell.LowerLeftRow - PositionOffset.Y) * Zoom - ZoomOffset;
+                var row = origin.X - (cell.LowerLeftColumn - PositionOffset.X) * Zoom - (Zoom * 10 - ZoomOffset);
                 canvas.FillColor = cold.Lerp(hot, cell.ColorTemp);
                 canvas.FillRectangle((float)col, (float)row, Zoom * 10, Zoom * 10);
             }
+        }
 
-            foreach (var cell in HighResolutionMap)
+        private void DrawHighResolutionMap(ICanvas canvas, Dictionary<long, Models.Cell> map, Coordinate origin)
+        {
+            foreach (var cell in map)
             {
                 var c = cell.Value;
                 canvas.FillColor = cold.Lerp(hot, c.ColorTemp);
-                var row = origin.Item1 - (c.Column - PositionOffset.X) * Zoom - zoomOffset;
-                var col = origin.Item2 + (c.Row - PositionOffset.Y) * Zoom - zoomOffset;
+                var row = origin.X - (c.Column - PositionOffset.X) * Zoom - ZoomOffset;
+                var col = origin.Y + (c.Row - PositionOffset.Y) * Zoom - ZoomOffset;
                 canvas.FillRectangle((float)col, (float)row, Zoom, Zoom);
             }
-
-            var pRow = origin.Item1 - (PerseverancePosition.X - PositionOffset.X) * Zoom;
-            var pCol = origin.Item2 + (PerseverancePosition.Y - PositionOffset.Y) * Zoom;
-            DrawPerseverance(canvas, LockCursorSize ? CursorSize : Zoom, (float)pRow, (float)pCol);
-
-            var iRow = origin.Item1 - (IngenuityPosition.X - PositionOffset.X) * Zoom;
-            var iCol = origin.Item2 + (IngenuityPosition.Y - PositionOffset.Y) * Zoom;
-            canvas.FillColor = Colors.Yellow;
-            canvas.FillCircle((float)iCol, (float)iRow, LockCursorSize ? (CursorSize / 2) : zoomOffset);
         }
 
-        private void DrawPerseverance(ICanvas canvas, float size, float pRow, float pCol)
+        private void DrawTarget(ICanvas canvas, Coordinate target, Coordinate origin)
         {
+            var tCol = origin.Y + (target.Y - PositionOffset.Y) * Zoom;
+            var tRow = origin.X - (target.X - PositionOffset.X) * Zoom;
+            canvas.FillColor = Color.FromArgb("#D2403D");
+            canvas.FillCircle((float)tCol, (float)tRow, LockCursorSize ? (CursorSize / 2) : ZoomOffset);
+            canvas.FillColor = Colors.White;
+            canvas.FillCircle((float)tCol, (float)tRow, LockCursorSize ? (CursorSize / 2) * (3.0f / 4) : ZoomOffset);
+            canvas.FillColor = Color.FromArgb("#D2403D");
+            canvas.FillCircle((float)tCol, (float)tRow, LockCursorSize ? (CursorSize / 2) * (2.0f / 4) : ZoomOffset);
+            canvas.FillColor = Colors.White;
+            canvas.FillCircle((float)tCol, (float)tRow, LockCursorSize ? (CursorSize / 2) * (1.0f / 4) : ZoomOffset);
+        }
+
+        private void DrawPerseverance(ICanvas canvas, Coordinate perseverance, Coordinate origin, Orientation orientation, float size)
+        {
+            var pRow = origin.X - (perseverance.X - PositionOffset.X) * Zoom;
+            var pCol = origin.Y + (perseverance.Y - PositionOffset.Y) * Zoom;
+
             PathF path = new PathF();
             canvas.FillColor = Colors.Green;
             float originOffset = size / 2;
 
-            float left = pCol - originOffset;
-            float right = pCol + originOffset;
-            float bottom = pRow + originOffset;
-            float top = pRow - originOffset;
-            float horizontalMiddle = pCol;
-            float verticalMiddle = pRow;    
+            var left = pCol - originOffset;
+            var right = pCol + originOffset;
+            var bottom = pRow + originOffset;
+            var top = pRow - originOffset;
+            var horizontalMiddle = pCol;
+            var verticalMiddle = pRow;
 
 
-            if (PerseveranceOrientation == "North")
+            if (orientation == Orientation.North)
             {
                 path.MoveTo(left, bottom);
                 path.LineTo(right, bottom);
                 path.LineTo(horizontalMiddle, top);
             }
-            else if (PerseveranceOrientation == "East")
+            else if (orientation == Orientation.East)
             {
                 path.MoveTo(left, bottom);
                 path.LineTo(left, top);
                 path.LineTo(right, verticalMiddle);
             }
-            else if (PerseveranceOrientation == "South")
+            else if (orientation == Orientation.South)
             {
                 path.MoveTo(left, top);
                 path.LineTo(right, top);
                 path.LineTo(horizontalMiddle, bottom);
             }
-            else if (PerseveranceOrientation == "West")
+            else if (orientation == Orientation.West)
             {
                 path.MoveTo(right, bottom);
                 path.LineTo(right, top);
                 path.LineTo(left, verticalMiddle);
             }
             canvas.FillPath(path);
+        }
+
+        private void DrawIngenuity(ICanvas canvas, Coordinate ingenuity, Coordinate origin, float size)
+        {
+            var iRow = origin.X - (ingenuity.X - PositionOffset.X) * Zoom;
+            var iCol = origin.Y + (ingenuity.Y - PositionOffset.Y) * Zoom;
+            canvas.FillColor = Colors.Yellow;
+            canvas.FillCircle((float)iCol, (float)iRow, size);
         }
     }
 }

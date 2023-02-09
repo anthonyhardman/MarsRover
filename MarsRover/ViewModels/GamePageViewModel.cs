@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MarsRover.Helpers;
+using MarsRover.Models;
 using MarsRover.Pages;
 using MarsRover.Services;
 using System.Collections.ObjectModel;
@@ -10,71 +12,49 @@ public partial class GamePageViewModel : ObservableObject
 {
     private readonly MarsRoverService service;
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(OrientationSymbol))]
-    private string orientation;
-
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(BatteryLevel))]
-    private int battery;
-
     [ObservableProperty]
-    private string name;
+    private Coordinate positionOffset;
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(PositionAndTarget))]
-    private string target;
 
-    [ObservableProperty, NotifyPropertyChangedFor(nameof(PositionAndTarget))]
-    private string position;
+    [ObservableProperty, 
+        NotifyPropertyChangedFor(nameof(PerseveranceBatteryGuage), 
+                                 nameof(IngenuityeBatteryGuage),
+                                 nameof(PerseverancePositionDisplay),
+                                 nameof(IngenuityPositionDisplay),
+                                 nameof(TargetDisplay))]
+    private GameData gameData;
 
-    public float BatteryLevel => Battery / 18000.0f;
+    public delegate void InvalidateMapDelegate();
 
-    public string PositionAndTarget => $"⌖{Position}    ⚑{Target}";
+    public InvalidateMapDelegate InvalidateMap { get; set; }
 
-    public string OrientationSymbol
-    {
-        get
-        {
-            switch (Orientation)
-            {
-                case "North":
-                    return "⇈";
-                case "East":
-                    return "⇉";
-                case "South":
-                    return "⇊";
-                case "West":
-                    return "⇇";
-                default:
-                    return "You're Drunk";
-            }
-        }
-    }
+
+    public float PerseveranceBatteryGuage => GameData.PerseveranceBattery / 18000.0f * 100.0f;
+    public float IngenuityeBatteryGuage => GameData.IngenuityBattery / 18000.0f * 100.0f;
+    public string PerseverancePositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.PerseverancePosition.Y}, {GameData.PerseverancePosition.X}";
+    public string IngenuityPositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.IngenuityPosition.X}, {GameData.IngenuityPosition.Y}";
+    public string TargetDisplay => $"{MaterialDesignIconFonts.Bullseye} {GameData.Target.Y}, {GameData.Target.X}";
 
     public GamePageViewModel(MarsRoverService service)
     {
         this.service = service;
+        this.service.PropertyChanged += Service_PropertyChanged;
+        this.PropertyChanged += GamePageViewModel_PropertyChanged;
+        GameData = service.GameData;
+        PositionOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
+       
     }
 
     [RelayCommand]
     public async Task Loaded()
     {
-        Orientation = service.GameData.Orientation;
-        Name = service.GameData.Name;
-        Target = service.GameData.Target.ToString();
-        Position = service.GameData.PerseverancePosition.ToString();    
-        Battery = 0;
+        GameData = service.GameData;
     }
 
     [RelayCommand]
     public async Task MoveDirection(string direction)
     {
         var message = await service.MovePerseveranceAsync(direction);
-
-        if (message != "Too Many Requests")
-        {
-            Orientation = service.GameData.Orientation;
-            Battery = service.GameData.PerseveranceBattery;
-            Position = service.GameData.PerseverancePosition.ToString();
-        }
     }
 
     [RelayCommand]
@@ -88,6 +68,29 @@ public partial class GamePageViewModel : ObservableObject
     public async Task NaviateToMapPage()
     {
         await Shell.Current.GoToAsync($"{nameof(MapPage)}");
+    }
+
+    private void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        GameData = service.GameData;
+        OnPropertyChanged(nameof(PerseverancePositionDisplay));
+        OnPropertyChanged(nameof(PerseveranceBatteryGuage));
+        OnPropertyChanged(nameof(IngenuityPositionDisplay));
+        OnPropertyChanged(nameof(IngenuityeBatteryGuage));
+
+
+        if (GameData.PerseverancePosition != null)
+        {
+            PositionOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
+        }
+    }
+
+    private void GamePageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (InvalidateMap != null)
+        {
+            InvalidateMap();
+        }
     }
 }
  

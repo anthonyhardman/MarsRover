@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MarsRover.Models
@@ -11,7 +12,7 @@ namespace MarsRover.Models
     {
         private string token;
         private string name;
-        private string orientation;
+        private Orientation orientation;
         private Coordinate target;
         private Coordinate perseverancePosition;
         private Coordinate ingenuityPosition;
@@ -41,7 +42,7 @@ namespace MarsRover.Models
         }
 
 
-        public string Orientation 
+        public Orientation Orientation 
         { 
             get => orientation;
             set 

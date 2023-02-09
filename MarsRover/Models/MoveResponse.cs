@@ -7,7 +7,7 @@
         public int batteryLevel { get; set; }
         public Cell[] neighbors { get; set; }
         public string message { get; set; }
-        public string orientation { get; set; }
+        public Orientation orientation { get; set; }
     }
 
 }

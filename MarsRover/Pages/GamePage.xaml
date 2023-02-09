@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:components="clr-namespace:MarsRover.Components"
+             xmlns:gauge="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges"
+             xmlns:helpers="clr-namespace:MarsRover.Helpers"
+             xmlns:progressBar="clr-namespace:Syncfusion.Maui.ProgressBar;assembly=Syncfusion.Maui.ProgressBar"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MarsRover.Pages.GamePage"
-             Title="GamePage">
+             Title="GamePage"
+             BackgroundColor="#BC2732">
     
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -12,80 +17,145 @@
     </ContentPage.Behaviors>
 
     <Grid
-            RowDefinitions="Auto,Auto,Auto,*,Auto,Auto"
+            RowDefinitions="Auto,Auto,Auto,*,Auto"
             ColumnDefinitions="*,Auto,*">
-        <Label Text="{Binding Name}"
+        <VerticalStackLayout Grid.Row="0"
+                             Grid.Column="0"
+                             Margin="10">
+            <progressBar:SfCircularProgressBar Progress="{Binding PerseveranceBatteryGuage}"
+                                               ProgressFill="Green"
+                                               >
+                <progressBar:SfCircularProgressBar.Content>
+                    <Image Source="perseverance.png"/>
+                </progressBar:SfCircularProgressBar.Content>
+            </progressBar:SfCircularProgressBar>
+            <Label Text="{Binding PerseverancePositionDisplay}"
+                   FontFamily="MaterialDesignIcons"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+        <Label Text="{Binding GameData.Name}"
                FontSize="Title"
                Grid.Row="0"
                Grid.Column="1"
                HorizontalOptions="Center"
                VerticalOptions="Center"/>
+        <VerticalStackLayout Grid.Row="0"
+                             Grid.Column="2"
+                             Margin="10"
+                             HorizontalOptions="End">
+            <progressBar:SfCircularProgressBar Progress="{Binding IngenuityeBatteryGuage}"
+                                               ProgressFill="Green">
+                <progressBar:SfCircularProgressBar.Content>
+                    <Image Source="ingenuity.png"/>
+                </progressBar:SfCircularProgressBar.Content>
+            </progressBar:SfCircularProgressBar>
+            <Label Text="{Binding IngenuityPositionDisplay}"
+                   FontFamily="MaterialDesignIcons"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
         <Label
-            Text="{Binding PositionAndTarget}"
+            Text="{Binding TargetDisplay}"
+            FontFamily="MaterialDesignIcons"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             Grid.Row="1"
             Grid.Column="1"/>
-        <ProgressBar
-            Progress="{Binding BatteryLevel}"
-            Margin="25"
-            ProgressColor="LimeGreen"
-            VerticalOptions="Start"
-            Grid.Row="2"
-            Grid.Column="1"/>
+
+        <Border StrokeShape="Ellipse"
+                StrokeThickness="3"
+                Stroke="blue"
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="Center"
+                Margin="0, 20">
+            <Border.Shadow>
+                <Shadow Brush="black"
+                        Offset="0, 10"
+                        Radius="25"/>
+            </Border.Shadow>
+            <GraphicsView x:Name="GraphicsView"
+                              HeightRequest="300"
+                              WidthRequest="300"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center">
+                <GraphicsView.Drawable>
+                    <components:MapView x:Name="MapView" 
+                                        PositionOffset="{Binding PositionOffset}"
+                                        LockCursorSize="True"
+                                        Zoom="25"
+                                        GameData="{Binding GameData}"/>
+                </GraphicsView.Drawable>
+            </GraphicsView>
+        </Border>
         <Grid
                 Grid.Column="1"
                 Grid.Row="3"
                 HorizontalOptions="Center"
-                VerticalOptions="Center"
-                RowDefinitions="100, 100, 100"
-                ColumnDefinitions="100, 100, 100">
-            <Button Text="⇮"
+                VerticalOptions="Start"
+                RowDefinitions="55, 55, 55"
+                ColumnDefinitions="55, 55, 55">
+            <Grid.Shadow>
+                <Shadow Brush="black"
+                        Offset="0, 5"/>
+            </Grid.Shadow>
+            <Button FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.ArrowUpBold}"
                     FontSize="Large"
                     Grid.Row="0"
                     Grid.Column="1"
                     Command="{Binding MoveDirectionCommand}"
                     CommandParameter="Forward"/>
-            <Button Text="⇩"
+            <Button FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.ArrowDownBold}"
                     FontSize="Large"
                     Grid.Row="2"
                     Grid.Column="1"
                     Command="{Binding MoveDirectionCommand}"
                     CommandParameter="Reverse"/>
-            <Button Text="↺"
+            <Button FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.ArrowLeftTopBold}"
                     FontSize="Large"
                     Grid.Row="1"
                     Grid.Column="0"
                     Command="{Binding MoveDirectionCommand}"
                     CommandParameter="Left"/>
-            <Button Text="↻"
+            <Button FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.ArrowRightTopBold}"
                     FontSize="Large"
                     Grid.Row="1"
                     Grid.Column="2"
                     Command="{Binding MoveDirectionCommand}"
                     CommandParameter="Right"/>
-            <Label  Text="{Binding OrientationSymbol}"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    FontSize="Large"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    TextColor="Blue"/>
         </Grid>
-        <Button
-            Text="Leave Game"
-            Margin="2"
-            BackgroundColor="Red"
-            VerticalOptions="End"
-            Grid.Row="4"
-            Grid.Column="1"
-            Command="{Binding LeaveGameCommand}"/>
-        <Button
-            Text="Go To Map"
-            Grid.Row="5"
-            Grid.Column="1"
-            VerticalOptions="Center"
-            Margin="2"
-            Command="{Binding NaviateToMapPageCommand}"/>
+        <VerticalStackLayout Grid.Row="4"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="3"
+                               HorizontalOptions="Fill"
+                               BackgroundColor="#9C2E35"
+                               Padding="5">
+            <VerticalStackLayout.Shadow>
+                <Shadow Brush="black"
+                        Offset="0, -5"/>
+            </VerticalStackLayout.Shadow>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button
+                    FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.ExitRun}"
+                    FontSize="25"
+                    BackgroundColor="Red"
+                    VerticalOptions="Center"
+                    HorizontalOptions="End"
+                    Margin="3, 3"
+                    Command="{Binding LeaveGameCommand}"/>
+                <Button
+                    FontFamily="MaterialDesignIcons"
+                    Text="{x:Static helpers:MaterialDesignIconFonts.Map}"
+                    VerticalOptions="Center"
+                    Margin="3, 3"
+                    FontSize="25"
+                    Command="{Binding NaviateToMapPageCommand}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

@@ -9,25 +9,14 @@ public partial class MapPageViewModel : ObservableObject
     private readonly MarsRoverService service;
 
     [ObservableProperty]
-    private Dictionary<long, Models.Cell> highResolutionMap;
-
-    [ObservableProperty]
-    private IEnumerable<LowResolutionMap> lowResolutionMap;
-
-    [ObservableProperty]
     private float zoom;
 
     [ObservableProperty]
     private Coordinate positionOffset;
 
     [ObservableProperty]
-    private Coordinate perseverancePosition;
+    private GameData gameData;
 
-    [ObservableProperty]
-    private string perseveranceOrientation;
-
-    [ObservableProperty]
-    private Coordinate ingenuityPosition;
 
     public delegate void InvalidateMapDelegate();
 
@@ -39,13 +28,9 @@ public partial class MapPageViewModel : ObservableObject
     {
         this.service = service;
         Zoom = 25;
-        HighResolutionMap = service.GameData.HighResolutionMap;
-        lowResolutionMap = service.GameData.LowResolutionMap;
-        PerseverancePosition = service.GameData.PerseverancePosition;
-        PerseveranceOrientation = service.GameData.Orientation;
-        originalOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
-        PositionOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
-        ingenuityPosition = service.GameData.IngenuityPosition;
+        GameData = service.GameData;    
+        originalOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
+        PositionOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
         
         this.PropertyChanged += MapPageViewModel_PropertyChanged;
         service.PropertyChanged += Service_PropertyChanged;
@@ -53,16 +38,7 @@ public partial class MapPageViewModel : ObservableObject
 
     private void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        HighResolutionMap = service.GameData.HighResolutionMap;
-        LowResolutionMap = service.GameData.LowResolutionMap;
-        PerseverancePosition = service.GameData.PerseverancePosition;
-        IngenuityPosition = service.GameData.IngenuityPosition;
-        PerseveranceOrientation = service.GameData.Orientation;
-        if (PerseverancePosition != null)
-        {
-            originalOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
-            PositionOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
-        }
+        GameData = service.GameData;
     }
 
     private void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -74,13 +50,17 @@ public partial class MapPageViewModel : ObservableObject
     {
         if (e.StatusType == GestureStatus.Running)
         {
-            PositionOffset = new Coordinate(originalOffset.X + e.TotalY * (1/zoom),
-                originalOffset.Y - e.TotalX * (1/zoom));
-            InvalidateMap();
+            PositionOffset = new Coordinate((float)(originalOffset.X + e.TotalY * (1/Zoom)),
+                (float)(originalOffset.Y - e.TotalX * (1/Zoom)));
         }
         else if (e.StatusType == GestureStatus.Completed)
         {
             originalOffset = new Coordinate(PositionOffset.X, PositionOffset.Y);
         }
+    }
+
+    public void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        var position = e.GetPosition((Element)sender);
     }
 }
