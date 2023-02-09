@@ -60,7 +60,7 @@ public partial class GamePageViewModel : ObservableObject
         Orientation = service.GameData.Orientation;
         Name = service.GameData.Name;
         Target = service.GameData.Target.ToString();
-        Position = service.GameData.Position.ToString();    
+        Position = service.GameData.PerseverancePosition.ToString();    
         Battery = 0;
     }
 
@@ -72,8 +72,8 @@ public partial class GamePageViewModel : ObservableObject
         if (message != "Too Many Requests")
         {
             Orientation = service.GameData.Orientation;
-            Battery = service.GameData.Battery;
-            Position = service.GameData.Position.ToString();
+            Battery = service.GameData.PerseveranceBattery;
+            Position = service.GameData.PerseverancePosition.ToString();
         }
     }
 

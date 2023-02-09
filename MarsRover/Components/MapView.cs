@@ -44,6 +44,24 @@ namespace MarsRover.Components
             set => SetValue(PerseveranceOrientationProperty, value);
         }
 
+        public Coordinate IngenuityPosition
+        {
+            get => (Coordinate)GetValue(IngenuityPositionProperty);
+            set => SetValue(IngenuityPositionProperty, value);
+        }
+
+        public bool LockCursorSize
+        {
+            get => (bool)GetValue(LockSizeProperty);
+            set => SetValue(LockSizeProperty, value);
+        }
+
+        public float CursorSize
+        {
+            get => (float)GetValue(CursorSizeProperty);
+            set => SetValue(CursorSizeProperty, value);
+        }
+
         private Color hot = Color.FromRgb(255, 0, 0);
         private Color cold = Color.FromRgb(0, 0, 255);
 
@@ -65,11 +83,24 @@ namespace MarsRover.Components
         public static readonly BindableProperty PerseveranceOrientationProperty =
             BindableProperty.Create(nameof(PerseveranceOrientation), typeof(string), typeof(MapView));
 
+        public static readonly BindableProperty LockSizeProperty =
+            BindableProperty.Create(nameof(LockCursorSize), typeof(bool), typeof(MapView));
+
+        public static readonly BindableProperty CursorSizeProperty =
+            BindableProperty.Create(nameof(CursorSize), typeof(float), typeof(MapView));
+
+        public static readonly BindableProperty IngenuityPositionProperty =
+            BindableProperty.Create(nameof(IngenuityPosition), typeof(Coordinate), typeof(MapView));
+
+        public MapView()
+        {
+            CursorSize = 25.0f;
+        }
+
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             var origin = (dirtyRect.Width / 2, dirtyRect.Height / 2);
             var zoomOffset = Zoom / 2;
-            var cursorScale = 1.0f;
 
             foreach (var cell in LowResolutionMap)
             {
@@ -90,22 +121,53 @@ namespace MarsRover.Components
 
             var pRow = origin.Item1 - (PerseverancePosition.X - PositionOffset.X) * Zoom;
             var pCol = origin.Item2 + (PerseverancePosition.Y - PositionOffset.Y) * Zoom;
-            DrawPerseverance(canvas, cursorScale, pRow, pCol);
+            DrawPerseverance(canvas, LockCursorSize ? CursorSize : Zoom, (float)pRow, (float)pCol);
+
+            var iRow = origin.Item1 - (IngenuityPosition.X - PositionOffset.X) * Zoom;
+            var iCol = origin.Item2 + (IngenuityPosition.Y - PositionOffset.Y) * Zoom;
+            canvas.FillColor = Colors.Yellow;
+            canvas.FillCircle((float)iCol, (float)iRow, LockCursorSize ? (CursorSize / 2) : zoomOffset);
         }
 
-        private void DrawPerseverance(ICanvas canvas, float cursorScale, double pRow, double pCol)
+        private void DrawPerseverance(ICanvas canvas, float size, float pRow, float pCol)
         {
             PathF path = new PathF();
+            canvas.FillColor = Colors.Green;
+            float originOffset = size / 2;
+
+            float left = pCol - originOffset;
+            float right = pCol + originOffset;
+            float bottom = pRow + originOffset;
+            float top = pRow - originOffset;
+            float horizontalMiddle = pCol;
+            float verticalMiddle = pRow;    
+
 
             if (PerseveranceOrientation == "North")
             {
-                path.MoveTo((float)pCol - (Zoom * cursorScale) / 2, (float)pRow + (Zoom * cursorScale) / 2);
-                path.LineTo((float)pCol + (Zoom * cursorScale) / 2, (float)pRow + (Zoom * cursorScale) / 2);
-                path.LineTo((float)pCol, (float)pRow - (Zoom * cursorScale) / 2);
-                canvas.FillColor = Colors.Green;
-                canvas.FillPath(path);
+                path.MoveTo(left, bottom);
+                path.LineTo(right, bottom);
+                path.LineTo(horizontalMiddle, top);
             }
+            else if (PerseveranceOrientation == "East")
+            {
+                path.MoveTo(left, bottom);
+                path.LineTo(left, top);
+                path.LineTo(right, verticalMiddle);
+            }
+            else if (PerseveranceOrientation == "South")
+            {
+                path.MoveTo(left, top);
+                path.LineTo(right, top);
+                path.LineTo(horizontalMiddle, bottom);
+            }
+            else if (PerseveranceOrientation == "West")
+            {
+                path.MoveTo(right, bottom);
+                path.LineTo(right, top);
+                path.LineTo(left, verticalMiddle);
+            }
+            canvas.FillPath(path);
         }
     }
-
 }

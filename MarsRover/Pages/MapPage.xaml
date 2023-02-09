@@ -12,8 +12,8 @@
                 StrokeThickness="5"
                 Margin="5">
             <GraphicsView x:Name="GraphicsView"
-                          HeightRequest="1000"
-                          WidthRequest="1000"
+                          HeightRequest="500"
+                          WidthRequest="500"
                           HorizontalOptions="Center"
                           VerticalOptions="Center">
                 
@@ -27,13 +27,15 @@
                                         Zoom="{Binding Zoom}"
                                         PositionOffset="{Binding PositionOffset}"
                                         PerseverancePosition="{Binding PerseverancePosition}"
-                                        PerseveranceOrientation="{Binding PerseveranceOrientation}"/>
+                                        IngenuityPosition="{Binding IngenuityPosition}"
+                                        PerseveranceOrientation="{Binding PerseveranceOrientation}"
+                                        LockCursorSize="True"/>
                 </GraphicsView.Drawable>
             </GraphicsView>
         </Border>
         <Slider Value="{Binding Zoom}"
                 Maximum="100"
-                Minimum="0.1"
+                Minimum="0.5"
                 Margin="25, 0"
                 ThumbColor="Blue"/>
     </VerticalStackLayout>

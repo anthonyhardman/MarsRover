@@ -26,6 +26,9 @@ public partial class MapPageViewModel : ObservableObject
     [ObservableProperty]
     private string perseveranceOrientation;
 
+    [ObservableProperty]
+    private Coordinate ingenuityPosition;
+
     public delegate void InvalidateMapDelegate();
 
     public InvalidateMapDelegate InvalidateMap { get; set; }
@@ -35,14 +38,31 @@ public partial class MapPageViewModel : ObservableObject
     public MapPageViewModel(MarsRoverService service)
     {
         this.service = service;
+        Zoom = 25;
         HighResolutionMap = service.GameData.HighResolutionMap;
         lowResolutionMap = service.GameData.LowResolutionMap;
-        Zoom = 25;
-        PerseverancePosition = service.GameData.Position;
+        PerseverancePosition = service.GameData.PerseverancePosition;
         PerseveranceOrientation = service.GameData.Orientation;
-        originalOffset = new Coordinate(perseverancePosition.X, perseverancePosition.Y);
-        PositionOffset = new Coordinate(perseverancePosition.X, perseverancePosition.Y);
-        this.PropertyChanged += MapPageViewModel_PropertyChanged; 
+        originalOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
+        PositionOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
+        ingenuityPosition = service.GameData.IngenuityPosition;
+        
+        this.PropertyChanged += MapPageViewModel_PropertyChanged;
+        service.PropertyChanged += Service_PropertyChanged;
+    }
+
+    private void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        HighResolutionMap = service.GameData.HighResolutionMap;
+        LowResolutionMap = service.GameData.LowResolutionMap;
+        PerseverancePosition = service.GameData.PerseverancePosition;
+        IngenuityPosition = service.GameData.IngenuityPosition;
+        PerseveranceOrientation = service.GameData.Orientation;
+        if (PerseverancePosition != null)
+        {
+            originalOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
+            PositionOffset = new Coordinate(PerseverancePosition.X, PerseverancePosition.Y);
+        }
     }
 
     private void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
