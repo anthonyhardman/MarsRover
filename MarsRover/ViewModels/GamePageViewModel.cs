@@ -31,7 +31,7 @@ public partial class GamePageViewModel : ObservableObject
     public float PerseveranceBatteryGuage => GameData.PerseveranceBattery / 18000.0f * 100.0f;
     public float IngenuityeBatteryGuage => GameData.IngenuityBattery / 18000.0f * 100.0f;
     public string PerseverancePositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.PerseverancePosition.Y}, {GameData.PerseverancePosition.X}";
-    public string IngenuityPositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.IngenuityPosition.X}, {GameData.IngenuityPosition.Y}";
+    public string IngenuityPositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.IngenuityPosition.Y}, {GameData.IngenuityPosition.X}";
     public string TargetDisplay => $"{MaterialDesignIconFonts.Bullseye} {GameData.Target.Y}, {GameData.Target.X}";
 
     public GamePageViewModel(MarsRoverService service)

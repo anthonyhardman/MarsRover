@@ -62,8 +62,9 @@
             Grid.Column="1"/>
 
         <Border StrokeShape="Ellipse"
-                StrokeThickness="3"
-                Stroke="blue"
+                StrokeThickness="2"
+                BackgroundColor="#1e1e1e"
+                Stroke="black"
                 Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"

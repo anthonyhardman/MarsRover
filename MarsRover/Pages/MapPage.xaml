@@ -2,24 +2,34 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:components="clr-namespace:MarsRover.Components"
+             xmlns:helpers="clr-namespace:MarsRover.Helpers"
              x:Class="MarsRover.Pages.MapPage"
-             Title="MapPage">
-    <VerticalStackLayout
-        HorizontalOptions="Center"
-        VerticalOptions="Center"
-        BackgroundColor="White">
+             Title="MapPage"
+             BackgroundColor="#BC2732">
+ 
+    <Grid RowDefinitions="*, Auto"
+          ColumnDefinitions="*, Auto, *">
         <Border Stroke="black"
                 StrokeThickness="5"
-                Margin="5">
+                BackgroundColor="#1e1e1e"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="3">
+            <Border.Shadow>
+                <Shadow Brush="black"
+                        Radius="30"/>
+            </Border.Shadow>
             <GraphicsView x:Name="GraphicsView"
-                          HeightRequest="500"
-                          WidthRequest="1000"
+                          HeightRequest="750"
+                          WidthRequest="750"
                           HorizontalOptions="Center"
                           VerticalOptions="Center">
-                
+
                 <GraphicsView.GestureRecognizers>
                     <PanGestureRecognizer x:Name="PanGestureRecognizer"/>
-                    <TapGestureRecognizer x:Name="TapGestureRecognizer"/>
+                    <PinchGestureRecognizer x:Name="PinchGestrueRecognizer"/>
                 </GraphicsView.GestureRecognizers>
                 <GraphicsView.Drawable>
                     <components:MapView x:Name="MapView" 
@@ -30,10 +40,41 @@
                 </GraphicsView.Drawable>
             </GraphicsView>
         </Border>
-        <Slider Value="{Binding Zoom}"
+        <VerticalStackLayout Grid.Column="0"
+                             Grid.Row="1"
+                             Grid.ColumnSpan="3"
+                             BackgroundColor="#9C2E35">
+            <VerticalStackLayout.Shadow>
+                <Shadow Brush="black"
+                        Offset="0, -5"/>
+            </VerticalStackLayout.Shadow>
+            <Slider Value="{Binding Zoom}"
                 Maximum="100"
                 Minimum="0.5"
-                Margin="25, 0"
+                Margin="25, 15"
                 ThumbColor="Blue"/>
-    </VerticalStackLayout>
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Grid.Column="1"
+                                   Grid.Row="2">
+                <Button FontFamily="MaterialDesignIcons"
+                        Text="{x:Static helpers:MaterialDesignIconFonts.SpaceInvaders}"
+                        FontSize="25"
+                        Margin="3, 3"
+                        TextColor="Green"
+                        Command="{Binding GoToPerseveranceCommand}"/>
+                <Button FontFamily="MaterialDesignIcons"
+                        Text="{x:Static helpers:MaterialDesignIconFonts.Helicopter}"
+                        FontSize="25"
+                        Margin="3, 3"
+                        TextColor="Grey"
+                        Command="{Binding GoToIngenuityCommand}"/>
+                <Button FontFamily="MaterialDesignIcons"
+                        Text="{x:Static helpers:MaterialDesignIconFonts.Bullseye}"
+                        FontSize="25"
+                        Margin="3, 3"
+                        TextColor="Red"
+                        Command="{Binding GoToTargetCommand}"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

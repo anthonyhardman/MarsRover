@@ -158,7 +158,7 @@ namespace MarsRover.Components
         {
             var iRow = origin.X - (ingenuity.X - PositionOffset.X) * Zoom;
             var iCol = origin.Y + (ingenuity.Y - PositionOffset.Y) * Zoom;
-            canvas.FillColor = Colors.Yellow;
+            canvas.FillColor = Colors.Grey;
             canvas.FillCircle((float)iCol, (float)iRow, size);
         }
     }

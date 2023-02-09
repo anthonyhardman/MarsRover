@@ -11,8 +11,6 @@ public partial class MapPage : ContentPage
 		MapView.BindingContext = vm;
 		vm.InvalidateMap = GraphicsView.Invalidate;
 		PanGestureRecognizer.PanUpdated += vm.PanGestureRecognizer_PanUpdated;
-        TapGestureRecognizer.Tapped += vm.TapGestureRecognizer_Tapped;
+        PinchGestrueRecognizer.PinchUpdated += vm.PinchGestrueRecognizer_PinchUpdated;
 	}
-
-    
 }
