@@ -20,7 +20,7 @@
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">
             <Label Text="Join A Game"
-                   FontSize="Large"
+                   FontSize="32"
                    HorizontalOptions="Center" />
             <Label Text="Name"
                    SemanticProperties.HeadingLevel="Level1"

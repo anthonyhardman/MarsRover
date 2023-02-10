@@ -127,7 +127,7 @@ public class MarsRoverService : INotifyPropertyChanged
     {
         try
         {
-            var response = await http.GetFromJsonAsync<MoveResponse>($"game/MoveIngenuity?token={GameData.Token}&destinationRow={row}&destinationColumn{col}");
+            var response = await http.GetFromJsonAsync<MoveResponse>($"Game/MoveIngenuity?token={GameData.Token}&destinationRow={row}&destinationColumn={col}");
             gameData.IngenuityBattery = response.batteryLevel;
             GameData.IngenuityPosition.X = response.column;
             GameData.IngenuityPosition.Y = response.row;
@@ -143,6 +143,15 @@ public class MarsRoverService : INotifyPropertyChanged
         catch
         {
             return "Too Many Requests";
+        }
+    }
+
+    public async Task RunIngenuityRouteAsync(LinkedList<Coordinate> coordinates)
+    {
+        var x = gameData.IngenuityPosition;
+        for (var curr = coordinates.First; curr != null; curr = curr.Next)
+        {
+            var message = await MoveIngenuityAsync((int)curr.Value.Y, (int)curr.Value.X);
         }
     }
 

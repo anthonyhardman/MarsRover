@@ -7,7 +7,7 @@ namespace MarsRover.ViewModels;
 
 public partial class MapPageViewModel : ObservableObject
 {
-    private readonly MarsRoverService service;
+    protected readonly MarsRoverService service;
 
     [ObservableProperty]
     private float zoom;
@@ -23,11 +23,11 @@ public partial class MapPageViewModel : ObservableObject
 
     public InvalidateMapDelegate InvalidateMap { get; set; }
 
-    private Coordinate originalOffset;
+    protected Coordinate originalOffset;
 
-    private bool panningInvalid = false;
+    protected bool panningInvalid = false;
 
-    private DateTime lastCompletedPinch;
+    protected DateTime lastCompletedPinch;
 
     public MapPageViewModel(MarsRoverService service)
     {
@@ -41,12 +41,13 @@ public partial class MapPageViewModel : ObservableObject
         service.PropertyChanged += Service_PropertyChanged;
     }
 
-    private void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         GameData = service.GameData;
+        InvalidateMap();
     }
 
-    private void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         InvalidateMap();
     }
