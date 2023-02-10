@@ -151,7 +151,11 @@ public class MarsRoverService : INotifyPropertyChanged
         var x = gameData.IngenuityPosition;
         for (var curr = coordinates.First; curr != null; curr = curr.Next)
         {
-            var message = await MoveIngenuityAsync((int)curr.Value.Y, (int)curr.Value.X);
+            string message;
+            do
+            {
+                message = await MoveIngenuityAsync((int)curr.Value.Y, (int)curr.Value.X);
+            } while (message == "Too Many Requests");
         }
     }
 

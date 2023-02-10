@@ -39,10 +39,12 @@ public partial class RoutePlannerPageViewModel : MapPageViewModel
     }
 
 	[RelayCommand]
-	public void RunRoute()
+	public async Task RunRoute()
 	{
-		service.RunIngenuityRouteAsync(Route);
-		InvalidateMap();
+		await service.RunIngenuityRouteAsync(Route);
+		Route.Clear();
+        Route.AddLast(new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y));
+        InvalidateMap();
 	}
 
     public void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
