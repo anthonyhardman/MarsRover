@@ -11,10 +11,10 @@ namespace MarsRover.ViewModels;
 public partial class GamePageViewModel : ObservableObject
 {
     private readonly MarsRoverService service;
+    private readonly AlertService alert;
 
     [ObservableProperty]
     private Coordinate positionOffset;
-
 
     [ObservableProperty, 
         NotifyPropertyChangedFor(nameof(PerseveranceBatteryGuage), 
@@ -34,9 +34,10 @@ public partial class GamePageViewModel : ObservableObject
     public string IngenuityPositionDisplay => $"{MaterialDesignIconFonts.MapMarker} {GameData.IngenuityPosition.Y}, {GameData.IngenuityPosition.X}";
     public string TargetDisplay => $"{MaterialDesignIconFonts.Bullseye} {GameData.Target.Y}, {GameData.Target.X}";
 
-    public GamePageViewModel(MarsRoverService service)
+    public GamePageViewModel(MarsRoverService service, AlertService alert)
     {
         this.service = service;
+        this.alert = alert;
         this.service.PropertyChanged += Service_PropertyChanged;
         this.PropertyChanged += GamePageViewModel_PropertyChanged;
         GameData = service.GameData;
@@ -59,14 +60,24 @@ public partial class GamePageViewModel : ObservableObject
     [RelayCommand]
     public async Task LeaveGame()
     {
-        await service.LeaveGameAsync();
-        await Shell.Current.GoToAsync($"..");
+        var leave = await alert.ShowConfirmationAsync("Leave Game", "Are you sure?");
+        if (leave)
+        {
+            await service.LeaveGameAsync();
+            await Shell.Current.GoToAsync($"..");
+        }
     }
 
     [RelayCommand]
     public async Task NaviateToMapPage()
     {
         await Shell.Current.GoToAsync($"{nameof(MapPage)}");
+    }
+
+    [RelayCommand]
+    public async Task NavigateToRoutePlannerPage()
+    {
+        await Shell.Current.GoToAsync($"{nameof(RoutePlannerPage)}");
     }
 
     private void Service_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

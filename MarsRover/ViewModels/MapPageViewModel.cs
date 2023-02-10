@@ -33,10 +33,10 @@ public partial class MapPageViewModel : ObservableObject
     {
         this.service = service;
         Zoom = 25;
-        GameData = service.GameData;    
+        GameData = service.GameData;
         originalOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
         PositionOffset = new Coordinate(GameData.PerseverancePosition.X, GameData.PerseverancePosition.Y);
-        
+
         this.PropertyChanged += MapPageViewModel_PropertyChanged;
         service.PropertyChanged += Service_PropertyChanged;
     }
@@ -53,12 +53,12 @@ public partial class MapPageViewModel : ObservableObject
 
     public void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)
     {
-        if (DateTime.Now > lastCompletedPinch.AddMilliseconds(250)&& !panningInvalid)
+        if (DateTime.Now > lastCompletedPinch.AddMilliseconds(250) && !panningInvalid)
         {
             if (e.StatusType == GestureStatus.Running)
             {
-                PositionOffset = new Coordinate((float)(originalOffset.X + e.TotalY * (1/Zoom)),
-                    (float)(originalOffset.Y - e.TotalX * (1/Zoom)));
+                PositionOffset = new Coordinate((float)(originalOffset.X + e.TotalY * (1 / Zoom)),
+                    (float)(originalOffset.Y - e.TotalX * (1 / Zoom)));
             }
             else if (e.StatusType == GestureStatus.Completed)
             {

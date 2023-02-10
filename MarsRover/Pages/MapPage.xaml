@@ -6,7 +6,7 @@
              x:Class="MarsRover.Pages.MapPage"
              Title="MapPage"
              BackgroundColor="#BC2732">
- 
+
     <Grid RowDefinitions="*, Auto"
           ColumnDefinitions="*, Auto, *">
         <Border Stroke="black"
@@ -19,7 +19,7 @@
                 Grid.ColumnSpan="3">
             <Border.Shadow>
                 <Shadow Brush="black"
-                        Radius="30"/>
+                        Radius="30" />
             </Border.Shadow>
             <GraphicsView x:Name="GraphicsView"
                           HeightRequest="750"
@@ -28,15 +28,15 @@
                           VerticalOptions="Center">
 
                 <GraphicsView.GestureRecognizers>
-                    <PanGestureRecognizer x:Name="PanGestureRecognizer"/>
-                    <PinchGestureRecognizer x:Name="PinchGestrueRecognizer"/>
+                    <PanGestureRecognizer x:Name="PanGestureRecognizer" />
+                    <PinchGestureRecognizer x:Name="PinchGestrueRecognizer" />
                 </GraphicsView.GestureRecognizers>
                 <GraphicsView.Drawable>
-                    <components:MapView x:Name="MapView" 
+                    <components:MapView x:Name="MapView"
                                         GameData="{Binding GameData}"
                                         Zoom="{Binding Zoom}"
                                         PositionOffset="{Binding PositionOffset}"
-                                        LockCursorSize="True"/>
+                                        LockCursorSize="True" />
                 </GraphicsView.Drawable>
             </GraphicsView>
         </Border>
@@ -46,13 +46,13 @@
                              BackgroundColor="#9C2E35">
             <VerticalStackLayout.Shadow>
                 <Shadow Brush="black"
-                        Offset="0, -5"/>
+                        Offset="0, -5" />
             </VerticalStackLayout.Shadow>
             <Slider Value="{Binding Zoom}"
-                Maximum="100"
-                Minimum="0.5"
-                Margin="25, 15"
-                ThumbColor="Blue"/>
+                    Maximum="100"
+                    Minimum="0.5"
+                    Margin="25, 15"
+                    ThumbColor="Blue" />
             <HorizontalStackLayout HorizontalOptions="Center"
                                    Grid.Column="1"
                                    Grid.Row="2">
@@ -61,19 +61,19 @@
                         FontSize="25"
                         Margin="3, 3"
                         TextColor="Green"
-                        Command="{Binding GoToPerseveranceCommand}"/>
+                        Command="{Binding GoToPerseveranceCommand}" />
                 <Button FontFamily="MaterialDesignIcons"
                         Text="{x:Static helpers:MaterialDesignIconFonts.Helicopter}"
                         FontSize="25"
                         Margin="3, 3"
                         TextColor="Grey"
-                        Command="{Binding GoToIngenuityCommand}"/>
+                        Command="{Binding GoToIngenuityCommand}" />
                 <Button FontFamily="MaterialDesignIcons"
                         Text="{x:Static helpers:MaterialDesignIconFonts.Bullseye}"
                         FontSize="25"
                         Margin="3, 3"
                         TextColor="Red"
-                        Command="{Binding GoToTargetCommand}"/>
+                        Command="{Binding GoToTargetCommand}" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </Grid>

@@ -2,38 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:components ="clr-namespace:MarsRover.Components"
-             x:Class="MarsRover.MainPage">
+             xmlns:components="clr-namespace:MarsRover.Components"
+             x:Class="MarsRover.MainPage"
+             BackgroundColor="#BC2732">
 
     <ContentPage.Behaviors>
-        <toolkit:EventToCommandBehavior
-            EventName="NavigatedTo"
-            Command="{Binding LoadedCommand}" />
+        <toolkit:EventToCommandBehavior EventName="NavigatedTo"
+                                        Command="{Binding LoadedCommand}" />
     </ContentPage.Behaviors>
-    
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
+
+    <Border Stroke="Black"
+            StrokeShape="RoundRectangle 10 10 10 10"
+            Padding="20"
+            BackgroundColor="#1e1e1e"
+            HorizontalOptions="Center"
             VerticalOptions="Center">
-
-            <Label
-                Text="Name"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-            <Entry Text="{Binding Name}"/>
-
-            <Label
-                Text="GameId"
-                FontSize="32"
-                HorizontalOptions="Center" />
-            <Entry Text="{Binding GameId}"/>
-
-            <Button 
-                Text="Join Game"
-                Command="{Binding JoinGameCommand}"/>
+        <VerticalStackLayout Spacing="25"
+                             Padding="30,0">
+            <Label Text="Join A Game"
+                   FontSize="Large"
+                   HorizontalOptions="Center" />
+            <Label Text="Name"
+                   SemanticProperties.HeadingLevel="Level1"
+                   FontSize="32"
+                   HorizontalOptions="Center" />
+            <Entry Text="{Binding Name}"
+                   BackgroundColor="#2e2e2e" />
+            <Label Text="Game ID"
+                   FontSize="32"
+                   HorizontalOptions="Center" />
+            <Entry Text="{Binding GameId}"
+                   BackgroundColor="#2e2e2e" />
+            <Button Text="Join Game"
+                    Command="{Binding JoinGameCommand}"
+                    HorizontalOptions="Center" />
         </VerticalStackLayout>
-    </ScrollView>
+    </Border>
 
 </ContentPage>

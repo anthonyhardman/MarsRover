@@ -11,6 +11,7 @@ namespace MarsRover.ViewModels;
 public partial class MainPageViewModel : ObservableObject
 {
     private readonly MarsRoverService service;
+    private readonly AlertService alert;
 
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof(JoinGameCommand))]
     private string gameId;
@@ -18,9 +19,10 @@ public partial class MainPageViewModel : ObservableObject
     [ObservableProperty, NotifyCanExecuteChangedFor(nameof(JoinGameCommand))]
     private string name;
 
-    public MainPageViewModel(MarsRoverService service)
+    public MainPageViewModel(MarsRoverService service, AlertService alert)
     {
         this.service = service;
+        this.alert = alert;
     }
 
     private bool canJoinGame => GameId != null && Name != null;
@@ -43,6 +45,10 @@ public partial class MainPageViewModel : ObservableObject
         if (joined)
         {
             await Shell.Current.GoToAsync($"{nameof(GamePage)}");
+        }
+        else
+        {
+            await alert.ShowAlertAsync("Invalid Game ID", "");
         }
     }
 }

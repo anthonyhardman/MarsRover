@@ -35,9 +35,13 @@ public static class MauiProgram
 		builder.Services.AddSingleton<GamePageViewModel>();
 
 		builder.Services.AddSingleton<MapPage>();
-		builder.Services.AddSingleton<MapPageViewModel>();	
+		builder.Services.AddSingleton<MapPageViewModel>();
+
+		builder.Services.AddSingleton<RoutePlannerPage>();
+		builder.Services.AddSingleton<RoutePlannerPageViewModel>();	
 
 		builder.Services.AddSingleton<MarsRoverService>();
+		builder.Services.AddSingleton<AlertService>();	
 		
 		builder.Services.AddSingleton(sp => new HttpClient
 		{
