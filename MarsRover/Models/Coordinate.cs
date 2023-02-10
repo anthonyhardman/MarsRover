@@ -29,5 +29,10 @@ namespace MarsRover.Models
         {
             return $"{X} {Y}";
         }
+
+        public float Distance(Coordinate to)
+        {
+            return (float)Math.Sqrt(Math.Pow(X - to.X, 2) + Math.Pow(Y - to.Y, 2));
+        }
     }
 }

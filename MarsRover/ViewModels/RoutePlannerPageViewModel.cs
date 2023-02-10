@@ -57,8 +57,29 @@ public partial class RoutePlannerPageViewModel : MapPageViewModel
 		var col = (float)Math.Round((tapPostiion.Value.X - origin.Y) / Zoom + PositionOffset.Y);
         var row = (float)Math.Round((tapPostiion.Value.Y - origin.X) / -Zoom + PositionOffset.X);
 
-		Route.AddLast(new Coordinate(row, col));
-		OnPropertyChanged(nameof(Route));
+        PlotRoute(Route.Last.Value, new Coordinate(row, col));
+        OnPropertyChanged(nameof(Route));
 		OnPropertyChanged(nameof(ViableTargets));
+    }
+
+	private void PlotRoute(Coordinate start, Coordinate target)
+	{
+		if (start.X == target.X && start.Y == target.Y)
+		{
+			return;
+		}
+
+        var xS = Enumerable.Range((int)start.X - 2, 5);
+        var yS = Enumerable.Range((int)start.Y - 2, 5);
+        var targets =  xS
+            .SelectMany(x => yS.Select(y => new Coordinate(x, y))
+            .Where(c => !(c.X == start.X && c.Y == start.Y)));
+
+		var nextPoint = targets.OrderBy(t => t.Distance(target)).First();
+		if (nextPoint != null)
+		{
+			Route.AddLast(nextPoint);
+			PlotRoute(nextPoint, target);
+		}
     }
 }
