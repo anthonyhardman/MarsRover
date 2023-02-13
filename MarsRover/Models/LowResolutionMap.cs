@@ -2,10 +2,10 @@
 {
     public class LowResolutionMap
     {
-        public int LowerLeftRow { get; set; }
-        public int LowerLeftColumn { get; set; }
-        public int UpperRightRow { get; set; }
-        public int UpperRightColumn { get; set; }
+        public int LowerLeftX { get; set; }
+        public int LowerLeftY { get; set; }
+        public int UpperRightX { get; set; }
+        public int UpperRightY { get; set; }
         public int AverageDifficulty { get; set; }
 
         public double ColorTemp => AverageDifficulty / 300.0;

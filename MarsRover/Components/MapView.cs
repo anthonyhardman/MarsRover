@@ -77,8 +77,8 @@ public class MapView : BindableObject, IDrawable
     {
         foreach (var cell in map)
         {
-            var col = origin.Y + (cell.LowerLeftRow - PositionOffset.Y) * Zoom - ZoomOffset;
-            var row = origin.X - (cell.LowerLeftColumn - PositionOffset.X) * Zoom - (Zoom * 10 - ZoomOffset);
+            var col = origin.Y + (cell.LowerLeftX - PositionOffset.Y) * Zoom - ZoomOffset;
+            var row = origin.X - (cell.LowerLeftY - PositionOffset.X) * Zoom - (Zoom * 10 - ZoomOffset);
             canvas.FillColor = cold.Lerp(hot, cell.ColorTemp);
             canvas.FillRectangle((float)col, (float)row, Zoom * 10, Zoom * 10);
         }
@@ -90,8 +90,8 @@ public class MapView : BindableObject, IDrawable
         {
             var c = cell.Value;
             canvas.FillColor = cold.Lerp(hot, c.ColorTemp);
-            var row = origin.X - (c.Column - PositionOffset.X) * Zoom - ZoomOffset;
-            var col = origin.Y + (c.Row - PositionOffset.Y) * Zoom - ZoomOffset;
+            var row = origin.X - (c.Y - PositionOffset.X) * Zoom - ZoomOffset;
+            var col = origin.Y + (c.X - PositionOffset.Y) * Zoom - ZoomOffset;
             canvas.FillRectangle((float)col, (float)row, Zoom, Zoom);
         }
     }
