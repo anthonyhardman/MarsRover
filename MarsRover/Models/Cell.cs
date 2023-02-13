@@ -2,16 +2,16 @@
 {
     public class Cell
     {
-        public long Row { get; set; }
-        public long Column { get; set; }
+        public long X { get; set; }
+        public long Y { get; set; }
         public int Difficulty { get; set; }
-        public long Hash => (Row << 32 | Column);
+        public long Hash => (X << 32 | Y);
         public double ColorTemp => Difficulty / 300.0;
 
-        public Cell(long row, long column, int difficulty)
+        public Cell(long x, long y, int difficulty)
         {
-            Row = row;
-            Column = column;
+            X = x;
+            Y = y;
             Difficulty = difficulty;
         }
     }

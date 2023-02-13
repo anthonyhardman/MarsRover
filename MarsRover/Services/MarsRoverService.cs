@@ -77,9 +77,9 @@ public class MarsRoverService : INotifyPropertyChanged
             GameData.Token = response.Token;
             GameData.Name = name;
             GameData.Orientation = response.Orientation;
-            GameData.Target = new Coordinate(response.TargetColumn, response.TargetRow);
-            GameData.PerseverancePosition = new Coordinate(response.StartingColumn, response.StartingRow);
-            GameData.IngenuityPosition = new Coordinate(response.StartingColumn, response.StartingRow);
+            GameData.Target = new Coordinate(response.TargetY, response.TargetX);
+            GameData.PerseverancePosition = new Coordinate(response.StartingY, response.StartingX);
+            GameData.IngenuityPosition = new Coordinate(response.StartingY, response.StartingX);
             GameData.HighResolutionMap = new();
             GameData.LowResolutionMap = response.LowResolutionMap;
             OnPropertyChanged(nameof(GameData));
@@ -104,18 +104,18 @@ public class MarsRoverService : INotifyPropertyChanged
         try
         {
             var response = await http.GetFromJsonAsync<MoveResponse>($"game/moveperseverance?token={GameData.Token}&direction={direction}");
-            GameData.Orientation = response.orientation;
-            GameData.PerseveranceBattery = response.batteryLevel;
-            GameData.PerseverancePosition.X = response.column;
-            GameData.PerseverancePosition.Y = response.row;
-            foreach (var cell in response.neighbors)
+            GameData.Orientation = response.Orientation;
+            GameData.PerseveranceBattery = response.BatteryLevel;
+            GameData.PerseverancePosition.X = response.Y;
+            GameData.PerseverancePosition.Y = response.X;
+            foreach (var cell in response.Neighbors)
             {
                 GameData.HighResolutionMap[cell.Hash] = cell;
             }
             OnPropertyChanged(nameof(GameData));
 
             await SaveGameDataAsync();
-            return response.message;
+            return response.Message;
         }
         catch
         {
@@ -128,17 +128,17 @@ public class MarsRoverService : INotifyPropertyChanged
         try
         {
             var response = await http.GetFromJsonAsync<MoveResponse>($"Game/MoveIngenuity?token={GameData.Token}&destinationRow={row}&destinationColumn={col}");
-            gameData.IngenuityBattery = response.batteryLevel;
-            GameData.IngenuityPosition.X = response.column;
-            GameData.IngenuityPosition.Y = response.row;
-            foreach (var cell in response.neighbors)
+            gameData.IngenuityBattery = response.BatteryLevel;
+            GameData.IngenuityPosition.X = response.Y;
+            GameData.IngenuityPosition.Y = response.X;
+            foreach (var cell in response.Neighbors)
             {
                 GameData.HighResolutionMap[cell.Hash] = cell;
             }
             OnPropertyChanged(nameof(GameData));
 
             await SaveGameDataAsync();
-            return response.message;
+            return response.Message;
         }
         catch
         {

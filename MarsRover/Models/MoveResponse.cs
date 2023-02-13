@@ -2,12 +2,12 @@
 {
     public class MoveResponse
     {
-        public int row { get; set; }
-        public int column { get; set; }
-        public int batteryLevel { get; set; }
-        public Cell[] neighbors { get; set; }
-        public string message { get; set; }
-        public Orientation orientation { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int BatteryLevel { get; set; }
+        public Cell[] Neighbors { get; set; }
+        public string Message { get; set; }
+        public Orientation Orientation { get; set; }
     }
 
 }
