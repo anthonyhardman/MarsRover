@@ -18,9 +18,7 @@ public partial class MapPageViewModel : ObservableObject
     [ObservableProperty]
     private GameData gameData;
 
-
     public delegate void InvalidateMapDelegate();
-
     public InvalidateMapDelegate InvalidateMap { get; set; }
 
     protected Coordinate originalOffset;
@@ -49,7 +47,10 @@ public partial class MapPageViewModel : ObservableObject
 
     protected void MapPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        InvalidateMap();
+        if (InvalidateMap != null)
+        {
+            InvalidateMap();
+        }
     }
 
     public void PanGestureRecognizer_PanUpdated(object sender, PanUpdatedEventArgs e)

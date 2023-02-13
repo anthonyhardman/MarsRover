@@ -27,15 +27,15 @@ public partial class RoutePlannerPageViewModel : MapPageViewModel
 	public RoutePlannerPageViewModel(MarsRoverService service) : base(service)
 	{
 		route = new();
-		Route.AddLast(new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y));
+        Zoom = 75;
+        originalOffset = new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y);
+        PositionOffset = new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y);
+        Route.AddLast(new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y));
     }
 
 	[RelayCommand]
 	public void Loaded()
 	{
-		Zoom = 75;
-        originalOffset = new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y);
-        PositionOffset = new Coordinate(GameData.IngenuityPosition.X, GameData.IngenuityPosition.Y);
     }
 
 	[RelayCommand]

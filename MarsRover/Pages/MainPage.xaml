@@ -25,12 +25,14 @@
             <Label Text="Name"
                    SemanticProperties.HeadingLevel="Level1"
                    FontSize="32"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center" 
+                   TextColor="White"/>
             <Entry Text="{Binding Name}"
                    BackgroundColor="#2e2e2e" />
             <Label Text="Game ID"
                    FontSize="32"
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center" 
+                   TextColor="White"/>
             <Entry Text="{Binding GameId}"
                    BackgroundColor="#2e2e2e" />
             <Button Text="Join Game"
